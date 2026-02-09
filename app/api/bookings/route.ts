@@ -109,28 +109,111 @@ export async function POST(request: NextRequest) {
       return booking
     })
 
-    // Генерируем ссылку на оплату через PayKeeper
-    const { paykeeper } = await import('@/lib/paykeeper')
+    // Создаем контакт и сделку в AmoCRM
+    const { amocrm } = await import('@/lib/amocrm')
     
-    const paymentResponse = await paykeeper.createPayment({
-      orderId: result.id,
-      amount: Number(result.totalAmount),
-      clientEmail: result.user.email,
-      clientPhone: result.user.phone,
-      clientName: result.user.name,
-    })
+    let amocrmContactId: number | undefined
+    let amocrmDealId: number | undefined
 
-    // Обновляем бронирование со ссылкой на оплату
-    await prisma.booking.update({
-      where: { id: result.id },
-      data: { 
-        paymentLink: paymentResponse.url,
-        paymentId: paymentResponse.invoiceId,
-      },
-    })
+    if (amocrm.isConfigured()) {
+      try {
+        // Создаем или обновляем контакт
+        const contact = await amocrm.createOrUpdateContact({
+          name: result.user.name,
+          phone: result.user.phone,
+          email: result.user.email,
+        })
+        amocrmContactId = contact.id
 
-    // TODO: На следующих этапах здесь будет:
-    // - Создание контакта и сделки в AmoCRM
+        // Генерируем ссылку на оплату через PayKeeper
+        const { paykeeper } = await import('@/lib/paykeeper')
+        const paymentResponse = await paykeeper.createPayment({
+          orderId: result.id,
+          amount: Number(result.totalAmount),
+          clientEmail: result.user.email,
+          clientPhone: result.user.phone,
+          clientName: result.user.name,
+        })
+
+        // Создаем сделку
+        const deal = await amocrm.createDeal({
+          name: `Бронирование #${result.id.slice(0, 8)}`,
+          price: Number(result.totalAmount),
+          contactId: contact.id,
+          customFields: {
+            adultTickets: result.adultTickets,
+            childTickets: result.childTickets,
+            infantTickets: result.infantTickets,
+            excursionDate: `${result.slot.date.toISOString().split('T')[0]} ${result.slot.time}`,
+            paymentLink: paymentResponse.url,
+          },
+        })
+        amocrmDealId = deal.id
+
+        // Обновляем бронирование
+        await prisma.booking.update({
+          where: { id: result.id },
+          data: {
+            paymentLink: paymentResponse.url,
+            paymentId: paymentResponse.invoiceId,
+            amocrmDealId: deal.id,
+          },
+        })
+
+        // Обновляем пользователя с AmoCRM ID
+        await prisma.user.update({
+          where: { id: result.user.id },
+          data: {
+            amocrmContactId: contact.id,
+          },
+        })
+
+        console.log('✅ AmoCRM: контакт и сделка созданы', {
+          contactId: contact.id,
+          dealId: deal.id,
+        })
+      } catch (error) {
+        console.error('❌ AmoCRM error:', error)
+        // Не прерываем процесс, если AmoCRM не работает
+        // Генерируем ссылку на оплату даже если AmoCRM упал
+        const { paykeeper } = await import('@/lib/paykeeper')
+        const paymentResponse = await paykeeper.createPayment({
+          orderId: result.id,
+          amount: Number(result.totalAmount),
+          clientEmail: result.user.email,
+          clientPhone: result.user.phone,
+          clientName: result.user.name,
+        })
+
+        await prisma.booking.update({
+          where: { id: result.id },
+          data: {
+            paymentLink: paymentResponse.url,
+            paymentId: paymentResponse.invoiceId,
+          },
+        })
+      }
+    } else {
+      // AmoCRM не настроен - просто создаем ссылку на оплату
+      const { paykeeper } = await import('@/lib/paykeeper')
+      const paymentResponse = await paykeeper.createPayment({
+        orderId: result.id,
+        amount: Number(result.totalAmount),
+        clientEmail: result.user.email,
+        clientPhone: result.user.phone,
+        clientName: result.user.name,
+      })
+
+      await prisma.booking.update({
+        where: { id: result.id },
+        data: {
+          paymentLink: paymentResponse.url,
+          paymentId: paymentResponse.invoiceId,
+        },
+      })
+    }
+
+    // TODO: На следующем этапе здесь будет:
     // - Отправка email уведомления
 
     // Получаем обновленное бронирование с ссылкой на оплату

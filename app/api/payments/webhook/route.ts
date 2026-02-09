@@ -69,8 +69,20 @@ export async function POST(request: NextRequest) {
 
       console.log('✅ Booking paid successfully:', orderId)
 
-      // TODO: На следующих этапах здесь будет:
-      // - Обновление статуса сделки в AmoCRM
+      // Обновляем статус сделки в AmoCRM
+      const { amocrm } = await import('@/lib/amocrm')
+      
+      if (booking.amocrmDealId && amocrm.isConfigured()) {
+        try {
+          await amocrm.updateDealStatus(booking.amocrmDealId)
+          console.log('✅ AmoCRM: статус сделки обновлен на "Оплачено"')
+        } catch (error) {
+          console.error('❌ AmoCRM update error:', error)
+          // Не прерываем процесс, если AmoCRM не работает
+        }
+      }
+
+      // TODO: На следующем этапе здесь будет:
       // - Отправка email подтверждения через SendGrid
 
       return new Response('OK', { status: 200 })
