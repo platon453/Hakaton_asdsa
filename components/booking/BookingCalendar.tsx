@@ -29,14 +29,14 @@ export function BookingCalendar({ onSlotSelect }: BookingCalendarProps) {
       try {
         // Получаем слоты только для выбранной даты
         const dateStr = selectedDate.toISOString().split('T')[0]
+        
+        console.log('Loading slots for date:', dateStr) // Debug
+        
         const allSlots = await fetchSlots(dateStr, dateStr)
 
-        // Фильтруем слоты по выбранной дате
-        const filteredSlots = allSlots.filter((slot) => {
-          return slot.date === dateStr
-        })
+        console.log('Received slots:', allSlots.length) // Debug
 
-        setSlots(filteredSlots)
+        setSlots(allSlots)
       } catch (err) {
         console.error('Error loading slots:', err)
         setError('Ошибка при загрузке слотов')
