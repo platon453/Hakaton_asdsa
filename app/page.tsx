@@ -1,3 +1,6 @@
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-50 to-white">
@@ -10,9 +13,11 @@ export default function Home() {
           <p className="text-xl text-gray-600 mb-8">
             Забронируйте незабываемую экскурсию к нашим пушистым друзьям
           </p>
-          <button className="bg-primary text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary/90 transition-colors">
-            Забронировать экскурсию
-          </button>
+          <Link href="/booking">
+            <Button size="lg" className="text-lg px-8 py-6">
+              Забронировать экскурсию
+            </Button>
+          </Link>
         </div>
 
         {/* Информационные карточки */}
@@ -36,12 +41,30 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Временная заглушка для календаря */}
+        {/* Преимущества */}
         <div className="mt-16 text-center">
-          <div className="inline-block bg-yellow-50 border border-yellow-200 rounded-lg px-6 py-4">
-            <p className="text-yellow-800">
-              📅 Календарь бронирования появится на следующем этапе разработки
-            </p>
+          <h2 className="text-3xl font-bold mb-8">Почему выбирают нас?</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="text-4xl mb-3">🦙</div>
+              <h3 className="font-semibold mb-2">Дружелюбные альпаки</h3>
+              <p className="text-sm text-gray-600">Наши питомцы обожают гостей</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="text-4xl mb-3">📸</div>
+              <h3 className="font-semibold mb-2">Фотосессия</h3>
+              <p className="text-sm text-gray-600">Включена в стоимость</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="text-4xl mb-3">👨‍👩‍👧‍👦</div>
+              <h3 className="font-semibold mb-2">Для всей семьи</h3>
+              <p className="text-sm text-gray-600">Интересно детям и взрослым</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="text-4xl mb-3">🌳</div>
+              <h3 className="font-semibold mb-2">На природе</h3>
+              <p className="text-sm text-gray-600">Чистый воздух и красота</p>
+            </div>
           </div>
         </div>
       </div>
