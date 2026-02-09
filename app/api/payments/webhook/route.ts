@@ -82,8 +82,33 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // TODO: На следующем этапе здесь будет:
-      // - Отправка email подтверждения через SendGrid
+      // Отправляем email подтверждение
+      const { emailClient } = await import('@/lib/email')
+      
+      if (emailClient.isConfigured()) {
+        try {
+          await emailClient.sendBookingConfirmation({
+            to: booking.user.email,
+            bookingId: booking.id,
+            customerName: booking.user.name,
+            excursionDate: new Date(booking.slot.date).toLocaleDateString('ru-RU', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            }),
+            excursionTime: booking.slot.time,
+            adultTickets: booking.adultTickets,
+            childTickets: booking.childTickets,
+            infantTickets: booking.infantTickets,
+            totalAmount: Number(booking.totalAmount),
+            tariffName: booking.slot.tariff.name,
+          })
+          console.log('✅ Email: подтверждение отправлено на', booking.user.email)
+        } catch (error) {
+          console.error('❌ Email error:', error)
+          // Не прерываем процесс, если email не отправился
+        }
+      }
 
       return new Response('OK', { status: 200 })
     }
