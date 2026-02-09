@@ -56,10 +56,7 @@ function DemoPaymentContent() {
           {/* DEMO баннер */}
           <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mb-6 text-center">
             <p className="font-semibold text-yellow-900">
-              🧪 ДЕМО режим PayKeeper
-            </p>
-            <p className="text-sm text-yellow-800 mt-1">
-              Это тестовая страница оплаты. В реальном режиме здесь будет форма PayKeeper.
+              PayKeeper
             </p>
           </div>
 
