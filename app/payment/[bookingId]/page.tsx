@@ -51,14 +51,12 @@ export default function PaymentPage({ params }: { params: { bookingId: string } 
   }, [params.bookingId])
 
   const handlePayment = () => {
-    // TODO: На следующем этапе будет редирект на PayKeeper
-    // Пока что симулируем успешную оплату
-    alert('На следующем этапе здесь будет редирект на PayKeeper для оплаты!')
-    
-    // Временно редиректим на страницу благодарности
-    setTimeout(() => {
-      router.push(`/thank-you?bookingId=${params.bookingId}`)
-    }, 1000)
+    if (booking?.paymentLink) {
+      // Редирект на страницу оплаты PayKeeper (в DEMO режиме это наша страница)
+      window.location.href = booking.paymentLink
+    } else {
+      alert('Ошибка: ссылка на оплату не найдена')
+    }
   }
 
   if (isLoading) {

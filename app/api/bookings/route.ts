@@ -109,38 +109,61 @@ export async function POST(request: NextRequest) {
       return booking
     })
 
-    // TODO: На следующих этапах здесь будет:
-    // - Создание контакта и сделки в AmoCRM
-    // - Генерация ссылки на оплату PayKeeper
-    // - Отправка email уведомления
-
-    // Генерируем временную ссылку на оплату (заглушка)
-    const paymentLink = `${process.env.NEXT_PUBLIC_APP_URL}/payment/${result.id}`
+    // Генерируем ссылку на оплату через PayKeeper
+    const { paykeeper } = await import('@/lib/paykeeper')
+    
+    const paymentResponse = await paykeeper.createPayment({
+      orderId: result.id,
+      amount: Number(result.totalAmount),
+      clientEmail: result.user.email,
+      clientPhone: result.user.phone,
+      clientName: result.user.name,
+    })
 
     // Обновляем бронирование со ссылкой на оплату
     await prisma.booking.update({
       where: { id: result.id },
-      data: { paymentLink },
+      data: { 
+        paymentLink: paymentResponse.url,
+        paymentId: paymentResponse.invoiceId,
+      },
+    })
+
+    // TODO: На следующих этапах здесь будет:
+    // - Создание контакта и сделки в AmoCRM
+    // - Отправка email уведомления
+
+    // Получаем обновленное бронирование с ссылкой на оплату
+    const updatedBooking = await prisma.booking.findUnique({
+      where: { id: result.id },
+      include: {
+        user: true,
+        slot: {
+          include: {
+            tariff: true,
+          },
+        },
+      },
     })
 
     // Форматируем ответ
     const response = {
       booking: {
-        id: result.id,
-        status: result.status,
-        totalAmount: Number(result.totalAmount),
-        adultTickets: result.adultTickets,
-        childTickets: result.childTickets,
-        infantTickets: result.infantTickets,
-        paymentLink,
+        id: updatedBooking!.id,
+        status: updatedBooking!.status,
+        totalAmount: Number(updatedBooking!.totalAmount),
+        adultTickets: updatedBooking!.adultTickets,
+        childTickets: updatedBooking!.childTickets,
+        infantTickets: updatedBooking!.infantTickets,
+        paymentLink: updatedBooking!.paymentLink || '',
         slot: {
-          date: result.slot.date.toISOString().split('T')[0],
-          time: result.slot.time,
+          date: updatedBooking!.slot.date.toISOString().split('T')[0],
+          time: updatedBooking!.slot.time,
         },
         user: {
-          name: result.user.name,
-          email: result.user.email,
-          phone: result.user.phone,
+          name: updatedBooking!.user.name,
+          email: updatedBooking!.user.email,
+          phone: updatedBooking!.user.phone,
         },
       },
     }
