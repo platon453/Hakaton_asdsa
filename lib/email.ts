@@ -1,12 +1,18 @@
 // Email клиент для отправки уведомлений
 
 import sgMail from '@sendgrid/mail'
+import nodemailer from 'nodemailer'
 
 interface EmailConfig {
   apiKey: string
   fromEmail: string
   fromName: string
   mode: 'demo' | 'production'
+  provider: 'sendgrid' | 'smtp'
+  smtpHost?: string
+  smtpPort?: number
+  smtpUser?: string
+  smtpPassword?: string
 }
 
 interface SendBookingConfirmationParams {
@@ -24,6 +30,7 @@ interface SendBookingConfirmationParams {
 
 class EmailClient {
   private config: EmailConfig
+  private transporter: any
 
   constructor() {
     this.config = {
@@ -31,11 +38,29 @@ class EmailClient {
       fromEmail: process.env.EMAIL_FROM || 'noreply@lulu-alpaca.ru',
       fromName: 'Ферма альпак ЛуЛу',
       mode: (process.env.EMAIL_MODE as 'demo' | 'production') || 'demo',
+      provider: (process.env.EMAIL_PROVIDER as 'sendgrid' | 'smtp') || 'smtp',
+      smtpHost: process.env.SMTP_HOST,
+      smtpPort: parseInt(process.env.SMTP_PORT || '587'),
+      smtpUser: process.env.SMTP_USER,
+      smtpPassword: process.env.SMTP_PASSWORD,
     }
 
-    // Инициализируем SendGrid только если есть API ключ
-    if (this.config.apiKey && this.config.mode === 'production') {
+    // Инициализируем SendGrid если используется
+    if (this.config.provider === 'sendgrid' && this.config.apiKey && this.config.mode === 'production') {
       sgMail.setApiKey(this.config.apiKey)
+    }
+
+    // Инициализируем SMTP если используется
+    if (this.config.provider === 'smtp' && this.config.smtpHost && this.config.mode === 'production') {
+      this.transporter = nodemailer.createTransport({
+        host: this.config.smtpHost,
+        port: this.config.smtpPort,
+        secure: this.config.smtpPort === 465, // true для 465, false для других портов
+        auth: {
+          user: this.config.smtpUser,
+          pass: this.config.smtpPassword,
+        },
+      })
     }
   }
 
@@ -46,7 +71,13 @@ class EmailClient {
     if (this.config.mode === 'demo') {
       return true // В DEMO режиме всегда готов
     }
-    return !!this.config.apiKey
+    if (this.config.provider === 'sendgrid') {
+      return !!this.config.apiKey
+    }
+    if (this.config.provider === 'smtp') {
+      return !!(this.config.smtpHost && this.config.smtpUser && this.config.smtpPassword)
+    }
+    return false
   }
 
   /**
@@ -83,23 +114,38 @@ class EmailClient {
       return
     }
 
-    // Production режим - отправка через SendGrid
+    // Production режим - отправка через SendGrid или SMTP
     try {
-      const msg = {
-        to,
-        from: {
-          email: this.config.fromEmail,
-          name: this.config.fromName,
-        },
-        subject,
-        html,
-        text: this.buildBookingConfirmationText(params), // Текстовая версия
-      }
+      if (this.config.provider === 'sendgrid') {
+        // SendGrid отправка
+        const msg = {
+          to,
+          from: {
+            email: this.config.fromEmail,
+            name: this.config.fromName,
+          },
+          subject,
+          html,
+          text: this.buildBookingConfirmationText(params),
+        }
 
-      await sgMail.send(msg)
-      console.log('✅ Email отправлен:', to)
+        await sgMail.send(msg)
+        console.log('✅ Email отправлен через SendGrid:', to)
+      } else if (this.config.provider === 'smtp') {
+        // SMTP отправка
+        const mailOptions = {
+          from: `"${this.config.fromName}" <${this.config.fromEmail}>`,
+          to,
+          subject,
+          html,
+          text: this.buildBookingConfirmationText(params),
+        }
+
+        await this.transporter.sendMail(mailOptions)
+        console.log('✅ Email отправлен через SMTP:', to)
+      }
     } catch (error: any) {
-      console.error('❌ Ошибка отправки email:', error.response?.body || error.message)
+      console.error('❌ Ошибка отправки email:', error.message || error)
       throw new Error('Не удалось отправить email')
     }
   }
