@@ -32,33 +32,31 @@ export function TicketSelector({
   }
 
   return (
-    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+    <div className="flex items-center justify-between p-5 bg-white/5 rounded-2xl border border-white/10">
       <div>
-        <div className="font-medium">{label}</div>
-        <div className="text-sm text-muted-foreground">
+        <div className="font-semibold text-white text-base">{label}</div>
+        <div className="text-sm text-white/60 mt-1">
           {price === 0 ? 'Бесплатно' : formatPrice(price)}
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <Button
+      <div className="flex items-center gap-4">
+        <button
           type="button"
-          variant="outline"
-          size="icon"
           onClick={decrement}
           disabled={count === 0}
+          className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all disabled:opacity-30 disabled:cursor-not-allowed border border-white/20"
         >
-          <Minus className="h-4 w-4" />
-        </Button>
-        <span className="text-lg font-semibold w-8 text-center">{count}</span>
-        <Button
+          <Minus className="h-4 w-4 text-white" />
+        </button>
+        <span className="text-xl font-bold w-10 text-center text-white">{count}</span>
+        <button
           type="button"
-          variant="outline"
-          size="icon"
           onClick={increment}
           disabled={count >= max}
+          className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all disabled:opacity-30 disabled:cursor-not-allowed border border-white/20"
         >
-          <Plus className="h-4 w-4" />
-        </Button>
+          <Plus className="h-4 w-4 text-white" />
+        </button>
       </div>
     </div>
   )

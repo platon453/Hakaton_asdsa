@@ -57,12 +57,10 @@ export default function BookingFormPage({ params }: { params: { slotId: string }
 
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-50 to-white">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center py-12">
-            <div className="text-4xl mb-4">⏳</div>
-            <p className="text-lg text-muted-foreground">Загрузка...</p>
-          </div>
+      <main className="min-h-screen bg-[#050505] flex items-center justify-center">
+        <div className="text-center py-12 fade-in">
+          <div className="text-6xl mb-6">⏳</div>
+          <p className="text-2xl text-white/60">Загрузка...</p>
         </div>
       </main>
     )
@@ -70,15 +68,15 @@ export default function BookingFormPage({ params }: { params: { slotId: string }
 
   if (error || !slot) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-50 to-white">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center py-12 bg-red-50 rounded-lg border border-red-200">
-            <div className="text-4xl mb-4">❌</div>
-            <h3 className="text-lg font-semibold mb-2 text-red-900">Ошибка</h3>
-            <p className="text-red-700">{error || 'Слот не найден'}</p>
+      <main className="min-h-screen bg-[#050505] flex items-center justify-center">
+        <div className="container mx-auto px-4 py-8 max-w-2xl">
+          <div className="text-center py-16 glass rounded-3xl border border-red-500/20">
+            <div className="text-6xl mb-6">❌</div>
+            <h3 className="text-3xl font-bold mb-4 text-white">Ошибка</h3>
+            <p className="text-xl text-red-300 mb-8">{error || 'Слот не найден'}</p>
             <button
               onClick={() => router.push('/booking')}
-              className="mt-4 text-primary underline"
+              className="btn-secondary"
             >
               Вернуться к выбору слотов
             </button>
@@ -89,22 +87,29 @@ export default function BookingFormPage({ params }: { params: { slotId: string }
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-50 to-white">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-center mb-8">Оформление бронирования</h1>
-        
-        {isSubmitting ? (
-          <div className="text-center py-12">
-            <div className="text-4xl mb-4">⏳</div>
-            <p className="text-lg text-muted-foreground">Создаем бронирование...</p>
-          </div>
-        ) : (
-          <BookingForm
-            slot={slot}
-            onBack={() => router.push('/booking')}
-            onSubmit={handleSubmit}
-          />
-        )}
+    <main className="min-h-screen bg-[#050505]">
+      {/* Background gradient */}
+      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-blue-900/10 pointer-events-none" />
+      
+      <div className="relative">
+        <div className="container mx-auto px-4 py-12 max-w-4xl">
+          <h1 className="text-5xl md:text-6xl font-bold text-white text-center mb-12 fade-in">
+            Оформление
+          </h1>
+          
+          {isSubmitting ? (
+            <div className="text-center py-20 fade-in">
+              <div className="text-6xl mb-6">⏳</div>
+              <p className="text-2xl text-white/60">Создаем бронирование...</p>
+            </div>
+          ) : (
+            <BookingForm
+              slot={slot}
+              onBack={() => router.push('/booking')}
+              onSubmit={handleSubmit}
+            />
+          )}
+        </div>
       </div>
     </main>
   )
