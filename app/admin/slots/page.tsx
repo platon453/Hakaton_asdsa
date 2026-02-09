@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
+import { Plus, Edit } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -75,6 +75,7 @@ export default async function SlotsPage() {
                   <th className="pb-3 font-medium">Вместимость</th>
                   <th className="pb-3 font-medium">Бронирований</th>
                   <th className="pb-3 font-medium">Статус</th>
+                  <th className="pb-3 font-medium">Действия</th>
                 </tr>
               </thead>
               <tbody>
@@ -121,6 +122,14 @@ export default async function SlotsPage() {
                     </td>
                     <td className="py-3">{slot._count.bookings}</td>
                     <td className="py-3">{getStatusBadge(slot)}</td>
+                    <td className="py-3">
+                      <Link href={`/admin/slots/${slot.id}`}>
+                        <Button variant="outline" size="sm">
+                          <Edit className="h-4 w-4 mr-1" />
+                          Редактировать
+                        </Button>
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>
