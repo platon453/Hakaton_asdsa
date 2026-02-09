@@ -1,17 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { BookingCalendar } from '@/components/booking/BookingCalendar'
 import type { Slot } from '@/lib/api-client'
 
 export default function BookingPage() {
-  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null)
+  const router = useRouter()
 
   const handleSlotSelect = (slot: Slot) => {
-    setSelectedSlot(slot)
-    console.log('Selected slot:', slot)
-    // TODO: На следующем этапе будет редирект на форму бронирования
-    alert(`Выбран слот: ${slot.date} в ${slot.time}\nНа следующем этапе здесь откроется форма бронирования!`)
+    // Редирект на страницу оформления бронирования
+    router.push(`/booking/${slot.id}`)
   }
 
   return (
