@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin", "cyrillic"] });
-
 export const metadata: Metadata = {
-  title: "Бронирование экскурсий - Ферма альпак ЛуЛу",
-  description: "Забронируйте экскурсию на ферму альпак ЛуЛу. Знакомство с альпаками, фотосессии и незабываемые впечатления!",
+  title: "ЛуЛу Альпака — Бронирование экскурсий",
+  description: "Забронируйте незабываемую экскурсию на ферму альпак. Современная система бронирования с моментальным подтверждением.",
 };
 
 export default function RootLayout({
@@ -15,8 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru">
-      <body className={inter.className}>{children}</body>
+    <html lang="ru" className="dark">
+      <body className="min-h-screen bg-[#050505]">{children}</body>
     </html>
   );
 }

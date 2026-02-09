@@ -13,31 +13,52 @@ export default function BookingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-50 to-white">
-      <div className="container mx-auto px-4 py-8">
-        {/* Заголовок */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Бронирование экскурсии 🦙
-          </h1>
-          <p className="text-lg text-gray-600">
-            Выберите удобную дату и время для посещения нашей фермы
-          </p>
-        </div>
+    <main className="min-h-screen bg-[#050505]">
+      {/* Background gradient */}
+      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-blue-900/10 pointer-events-none" />
+      
+      <div className="relative">
+        <div className="container mx-auto px-4 py-12 max-w-7xl">
+          {/* Заголовок */}
+          <div className="text-center mb-16 fade-in">
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">
+              Выберите дату
+            </h1>
+            <p className="text-xl text-white/60 max-w-2xl mx-auto">
+              Найдите идеальное время для встречи с альпаками
+            </p>
+          </div>
 
-        {/* Календарь и слоты */}
-        <BookingCalendar onSlotSelect={handleSlotSelect} />
+          {/* Календарь и слоты */}
+          <div className="mb-16">
+            <BookingCalendar onSlotSelect={handleSlotSelect} />
+          </div>
 
-        {/* Информация */}
-        <div className="mt-12 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="font-semibold text-blue-900 mb-2">ℹ️ Полезная информация</h3>
-          <ul className="text-blue-800 space-y-1 text-sm">
-            <li>• Длительность экскурсии: ~1.5 часа</li>
-            <li>• Можно покормить и погладить альпак</li>
-            <li>• Фотосессия включена в стоимость</li>
-            <li>• Дети до 3 лет проходят бесплатно</li>
-            <li>• При бронировании более 5 мест действует скидка</li>
-          </ul>
+          {/* Информация */}
+          <div className="glass rounded-3xl p-8 max-w-3xl mx-auto fade-in-delay">
+            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+              <span className="text-3xl">ℹ️</span>
+              Полезная информация
+            </h3>
+            <ul className="text-white/70 space-y-3 text-base">
+              <li className="flex items-start gap-3">
+                <span className="text-white/40">•</span>
+                <span>Длительность экскурсии: ~1.5 часа</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-white/40">•</span>
+                <span>Можно покормить и погладить альпак</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-white/40">•</span>
+                <span>Фотосессия включена в стоимость</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-white/40">•</span>
+                <span>Дети до 3 лет проходят бесплатно</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </main>

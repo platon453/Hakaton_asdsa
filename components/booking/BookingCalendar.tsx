@@ -51,19 +51,19 @@ export function BookingCalendar({ onSlotSelect }: BookingCalendarProps) {
   return (
     <div className="grid lg:grid-cols-2 gap-8">
       {/* Левая колонка - выбор даты */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Выберите дату</h2>
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-white mb-6">Календарь</h2>
         <DateSelector selectedDate={selectedDate} onDateChange={setSelectedDate} />
       </div>
 
       {/* Правая колонка - список слотов */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4">
-          Доступные слоты на {formatDate(selectedDate)}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-white mb-6">
+          {formatDate(selectedDate)}
         </h2>
 
         {error ? (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
+          <div className="glass border-red-500/20 rounded-2xl p-6 text-red-300">
             {error}
           </div>
         ) : (

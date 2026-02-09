@@ -16,7 +16,7 @@ export function SlotList({ slots, onSlotSelect, isLoading }: SlotListProps) {
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="h-40 bg-gray-100 rounded-lg animate-pulse"
+            className="h-64 glass rounded-3xl animate-pulse"
           />
         ))}
       </div>
@@ -25,10 +25,10 @@ export function SlotList({ slots, onSlotSelect, isLoading }: SlotListProps) {
 
   if (slots.length === 0) {
     return (
-      <div className="text-center py-12 bg-gray-50 rounded-lg border border-dashed">
-        <div className="text-4xl mb-4">📅</div>
-        <h3 className="text-lg font-semibold mb-2">Нет доступных слотов</h3>
-        <p className="text-muted-foreground">
+      <div className="text-center py-16 glass rounded-3xl border border-dashed border-white/20">
+        <div className="text-6xl mb-4">📅</div>
+        <h3 className="text-2xl font-bold text-white mb-2">Нет доступных слотов</h3>
+        <p className="text-white/60">
           На выбранную дату нет свободных мест. Попробуйте выбрать другой день.
         </p>
       </div>
