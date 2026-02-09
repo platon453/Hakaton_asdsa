@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Suspense } from 'react'
+import { Lock, User, AlertCircle, Loader2, ShieldCheck } from 'lucide-react'
 
 function LoginForm() {
   const router = useRouter()
@@ -44,68 +45,95 @@ function LoginForm() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">
-            🔐 Вход в админ-панель
-          </CardTitle>
-          <p className="text-center text-muted-foreground">
-            Ферма альпак ЛуЛу
-          </p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="username">Логин</Label>
-              <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="admin"
-                required
-                className="mt-1"
-              />
+    <main className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="inline-block mb-4">
+            <div className="p-4 rounded-2xl glass-strong glow-emerald">
+              <ShieldCheck className="h-12 w-12 text-primary" />
             </div>
+          </div>
+          <h1 className="text-4xl font-bold mb-2">Админ-панель</h1>
+          <p className="text-secondary">Ферма альпак ЛуЛу</p>
+        </div>
 
-            <div>
-              <Label htmlFor="password">Пароль</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                className="mt-1"
-              />
-            </div>
-
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded">
-                {error}
+        <Card className="glass-strong animate-fade-in-delay-1">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Вход в систему</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <Label htmlFor="username" className="text-base mb-2 block">Логин</Label>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-secondary" />
+                  <Input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="admin"
+                    required
+                    className="pl-12"
+                  />
+                </div>
               </div>
-            )}
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Вход...' : 'Войти'}
-            </Button>
+              <div>
+                <Label htmlFor="password" className="text-base mb-2 block">Пароль</Label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-secondary" />
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    className="pl-12"
+                  />
+                </div>
+              </div>
 
-            <div className="text-sm text-center text-muted-foreground">
-              <p>По умолчанию:</p>
-              <p className="font-mono">admin / hackathon2024</p>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+              {error && (
+                <div className="glass-strong rounded-2xl p-4 border border-destructive/30">
+                  <div className="flex items-center gap-3 text-destructive">
+                    <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                    <p>{error}</p>
+                  </div>
+                </div>
+              )}
+
+              <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                    Вход...
+                  </>
+                ) : (
+                  'Войти'
+                )}
+              </Button>
+
+              <div className="glass rounded-2xl p-4 text-center">
+                <p className="text-sm text-secondary mb-1">По умолчанию:</p>
+                <p className="font-mono text-sm font-semibold">admin / hackathon2024</p>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </main>
   )
 }
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div>Загрузка...</div>}>
+    <Suspense fallback={
+      <main className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-16 w-16 text-primary animate-spin" />
+      </main>
+    }>
       <LoginForm />
     </Suspense>
   )

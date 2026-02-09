@@ -1,6 +1,6 @@
 'use client'
 
-import { Minus, Plus } from 'lucide-react'
+import { Minus, Plus, Ticket } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatPrice } from '@/lib/utils'
 
@@ -32,11 +32,16 @@ export function TicketSelector({
   }
 
   return (
-    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-      <div>
-        <div className="font-medium">{label}</div>
-        <div className="text-sm text-muted-foreground">
-          {price === 0 ? 'Бесплатно' : formatPrice(price)}
+    <div className="flex items-center justify-between p-5 glass rounded-2xl transition-smooth hover:glass-strong">
+      <div className="flex items-center gap-3">
+        <div className="p-2 rounded-xl glass">
+          <Ticket className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <div className="font-semibold">{label}</div>
+          <div className="text-sm text-secondary">
+            {price === 0 ? <span className="text-primary font-medium">Бесплатно</span> : formatPrice(price)}
+          </div>
         </div>
       </div>
       <div className="flex items-center gap-3">
@@ -49,7 +54,7 @@ export function TicketSelector({
         >
           <Minus className="h-4 w-4" />
         </Button>
-        <span className="text-lg font-semibold w-8 text-center">{count}</span>
+        <span className="text-xl font-bold w-10 text-center">{count}</span>
         <Button
           type="button"
           variant="outline"

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Check, Clock, CreditCard } from 'lucide-react'
+import { Check, Clock, CreditCard, Loader2, AlertCircle, Info } from 'lucide-react'
 
 interface Booking {
   id: string
@@ -61,10 +61,10 @@ export default function PaymentPage({ params }: { params: { bookingId: string } 
 
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center">
+      <main className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl mb-4">⏳</div>
-          <p className="text-lg text-muted-foreground">Загрузка...</p>
+          <Loader2 className="h-16 w-16 text-primary animate-spin mx-auto mb-4" />
+          <p className="text-xl text-secondary">Загрузка...</p>
         </div>
       </main>
     )
@@ -72,85 +72,99 @@ export default function PaymentPage({ params }: { params: { bookingId: string } 
 
   if (!booking) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-4xl mb-4">❌</div>
-          <p className="text-lg text-red-600">Бронирование не найдено</p>
-        </div>
+      <main className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="glass-strong max-w-md">
+          <CardContent className="py-16 text-center">
+            <div className="flex justify-center mb-6">
+              <div className="p-4 rounded-2xl glass-strong">
+                <AlertCircle className="h-16 w-16 text-destructive" />
+              </div>
+            </div>
+            <h3 className="text-2xl font-bold mb-3">Бронирование не найдено</h3>
+            <p className="text-secondary">Проверьте правильность ссылки</p>
+          </CardContent>
+        </Card>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-50 to-white">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-3xl font-bold text-center mb-8">Оплата бронирования</h1>
+    <main className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12 animate-fade-in">
+            <h1 className="text-5xl font-bold mb-4">Оплата бронирования</h1>
+            <div className="w-24 h-1 bg-primary mx-auto rounded-full glow-emerald"></div>
+          </div>
 
-          <Card className="mb-6">
+          <Card className="mb-8 glass-strong animate-fade-in-delay-1">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Бронирование создано</CardTitle>
-                <Badge variant="warning">
-                  <Clock className="h-3 w-3 mr-1" />
+                <CardTitle className="text-3xl">Бронирование создано</CardTitle>
+                <Badge variant="warning" className="text-sm px-4 py-2">
+                  <Clock className="h-4 w-4 mr-2" />
                   Ожидает оплаты
                 </Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  <Check className="h-5 w-5 text-green-600 mt-0.5" />
+              <div className="glass-strong rounded-2xl p-6 border border-primary/30 glow-emerald">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-2xl bg-primary/20">
+                    <Check className="h-6 w-6 text-primary" />
+                  </div>
                   <div>
-                    <h3 className="font-semibold text-green-900 mb-1">
+                    <h3 className="font-bold text-xl mb-2">
                       Бронирование успешно создано!
                     </h3>
-                    <p className="text-sm text-green-700">
-                      Номер бронирования: <strong>{booking.id.slice(0, 8).toUpperCase()}</strong>
+                    <p className="text-secondary">
+                      Номер бронирования: <strong className="text-foreground">{booking.id.slice(0, 8).toUpperCase()}</strong>
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <h3 className="font-semibold">Детали бронирования:</h3>
-                <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Дата:</span>
-                    <span className="font-medium">{new Date(booking.slot.date).toLocaleDateString('ru-RU')}</span>
+              <div className="space-y-4">
+                <h3 className="font-bold text-xl">Детали бронирования:</h3>
+                <div className="glass rounded-2xl p-6 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-secondary">Дата:</span>
+                    <span className="font-semibold">{new Date(booking.slot.date).toLocaleDateString('ru-RU')}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Время:</span>
-                    <span className="font-medium">{booking.slot.time}</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-secondary">Время:</span>
+                    <span className="font-semibold">{booking.slot.time}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Билетов:</span>
-                    <span className="font-medium">
+                  <div className="flex justify-between items-center">
+                    <span className="text-secondary">Билетов:</span>
+                    <span className="font-semibold">
                       {booking.adultTickets + booking.childTickets + booking.infantTickets}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <h3 className="font-semibold">Контактная информация:</h3>
-                <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
-                  <div><strong>Имя:</strong> {booking.user.name}</div>
-                  <div><strong>Телефон:</strong> {booking.user.phone}</div>
-                  <div><strong>Email:</strong> {booking.user.email}</div>
+              <div className="space-y-4">
+                <h3 className="font-bold text-xl">Контактная информация:</h3>
+                <div className="glass rounded-2xl p-6 space-y-3">
+                  <div className="flex justify-between"><span className="text-secondary">Имя:</span><strong>{booking.user.name}</strong></div>
+                  <div className="flex justify-between"><span className="text-secondary">Телефон:</span><strong>{booking.user.phone}</strong></div>
+                  <div className="flex justify-between"><span className="text-secondary">Email:</span><strong>{booking.user.email}</strong></div>
                 </div>
               </div>
 
-              <div className="pt-4 border-t">
-                <div className="flex justify-between items-center mb-6">
-                  <span className="text-lg font-semibold">Сумма к оплате:</span>
-                  <span className="text-3xl font-bold text-primary">
-                    {new Intl.NumberFormat('ru-RU', {
-                      style: 'currency',
-                      currency: 'RUB',
-                      minimumFractionDigits: 0,
-                    }).format(booking.totalAmount)}
-                  </span>
+              <div className="pt-6 mt-6 border-t border-ultra-thin">
+                <div className="glass rounded-2xl p-6 mb-6">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xl font-bold">Сумма к оплате:</span>
+                    <span className="text-4xl font-bold text-primary glow-emerald">
+                      {new Intl.NumberFormat('ru-RU', {
+                        style: 'currency',
+                        currency: 'RUB',
+                        minimumFractionDigits: 0,
+                      }).format(booking.totalAmount)}
+                    </span>
+                  </div>
                 </div>
 
                 <Button onClick={handlePayment} className="w-full" size="lg">
@@ -158,21 +172,39 @@ export default function PaymentPage({ params }: { params: { bookingId: string } 
                   Перейти к оплате
                 </Button>
 
-                <p className="text-xs text-muted-foreground text-center mt-4">
-                  После оплаты подтверждение будет отправлено на {booking.user.email}
+                <p className="text-sm text-secondary text-center mt-4">
+                  После оплаты подтверждение будет отправлено на <strong className="text-foreground">{booking.user.email}</strong>
                 </p>
               </div>
             </CardContent>
           </Card>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
-            <p className="font-semibold mb-2">ℹ️ Информация:</p>
-            <ul className="space-y-1 list-disc list-inside">
-              <li>Бронирование действительно 30 минут</li>
-              <li>После оплаты вы получите подтверждение на email</li>
-              <li>Можно оплатить картой или через СБП</li>
-            </ul>
-          </div>
+          <Card className="glass-strong animate-fade-in-delay-2">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-2xl glass">
+                  <Info className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <p className="font-bold text-lg mb-3">Информация:</p>
+                  <ul className="space-y-2 text-secondary">
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-1">•</span>
+                      <span>Бронирование действительно 30 минут</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-1">•</span>
+                      <span>После оплаты вы получите подтверждение на email</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-1">•</span>
+                      <span>Можно оплатить картой или через СБП</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </main>

@@ -88,19 +88,19 @@ export function BookingForm({ slot, onBack, onSubmit }: BookingFormProps) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      {/* Информация о слоте */}
-      <Card className="mb-6">
-        <CardContent className="p-4">
+    <div className="max-w-3xl mx-auto">
+      {/* Slot Info */}
+      <Card className="mb-8 glass-strong">
+        <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm text-muted-foreground">Выбранный слот</div>
-              <div className="font-semibold text-lg">
+              <div className="text-sm text-secondary mb-2">Выбранный слот</div>
+              <div className="font-bold text-2xl mb-1">
                 {formatDate(new Date(slot.date))} в {slot.time}
               </div>
-              <div className="text-sm text-muted-foreground">{slot.tariff.name}</div>
+              <div className="text-sm text-secondary">{slot.tariff.name}</div>
             </div>
-            <Button variant="ghost" size="sm" onClick={onBack}>
+            <Button variant="outline" size="sm" onClick={onBack}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Изменить
             </Button>
@@ -108,28 +108,28 @@ export function BookingForm({ slot, onBack, onSubmit }: BookingFormProps) {
         </CardContent>
       </Card>
 
-      {/* Индикатор шагов */}
-      <div className="flex items-center justify-center mb-8">
-        <div className="flex items-center gap-2">
+      {/* Step Indicator */}
+      <div className="flex items-center justify-center mb-12">
+        <div className="flex items-center gap-3">
           <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-              step >= 1 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center text-base font-bold transition-smooth ${
+              step >= 1 ? 'bg-primary text-primary-foreground glow-emerald' : 'glass'
             }`}
           >
             1
           </div>
-          <div className="w-12 h-0.5 bg-gray-200" />
+          <div className={`w-16 h-1 rounded-full transition-smooth ${step >= 2 ? 'bg-primary glow-emerald' : 'glass'}`} />
           <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-              step >= 2 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center text-base font-bold transition-smooth ${
+              step >= 2 ? 'bg-primary text-primary-foreground glow-emerald' : 'glass'
             }`}
           >
             2
           </div>
-          <div className="w-12 h-0.5 bg-gray-200" />
+          <div className={`w-16 h-1 rounded-full transition-smooth ${step >= 3 ? 'bg-primary glow-emerald' : 'glass'}`} />
           <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-              step >= 3 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center text-base font-bold transition-smooth ${
+              step >= 3 ? 'bg-primary text-primary-foreground glow-emerald' : 'glass'
             }`}
           >
             3
@@ -138,13 +138,13 @@ export function BookingForm({ slot, onBack, onSubmit }: BookingFormProps) {
       </div>
 
       <form onSubmit={handleFormSubmit}>
-        {/* Шаг 1: Выбор билетов */}
+        {/* Step 1: Tickets */}
         {step === 1 && (
-          <Card>
+          <Card className="glass-strong">
             <CardHeader>
-              <CardTitle>Шаг 1: Выберите билеты</CardTitle>
+              <CardTitle className="text-3xl">Выберите билеты</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-5">
               <TicketSelector
                 label="Взрослый билет"
                 price={slot.tariff.adultPrice}
@@ -167,18 +167,20 @@ export function BookingForm({ slot, onBack, onSubmit }: BookingFormProps) {
               />
 
               {errors.tickets?.adult && (
-                <p className="text-sm text-red-600">{errors.tickets.adult.message}</p>
+                <p className="text-sm text-destructive mt-2">{errors.tickets.adult.message}</p>
               )}
 
-              <div className="pt-4 border-t">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-lg font-semibold">Итого:</span>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-primary">
-                      {formatPrice(totalAmount)}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {totalTickets} {totalTickets === 1 ? 'билет' : 'билета'}
+              <div className="pt-6 mt-6 border-t border-ultra-thin">
+                <div className="p-6 glass rounded-2xl mb-6">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xl font-semibold">Итого:</span>
+                    <div className="text-right">
+                      <div className="text-3xl font-bold text-primary glow-emerald">
+                        {formatPrice(totalAmount)}
+                      </div>
+                      <div className="text-sm text-secondary mt-1">
+                        {totalTickets} {totalTickets === 1 ? 'билет' : totalTickets < 5 ? 'билета' : 'билетов'}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -186,65 +188,63 @@ export function BookingForm({ slot, onBack, onSubmit }: BookingFormProps) {
                 <Button
                   type="button"
                   className="w-full"
+                  size="lg"
                   onClick={() => setStep(2)}
                   disabled={!canProceedToStep2}
                 >
-                  Далее
+                  Продолжить
                 </Button>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Шаг 2: Контактные данные */}
+        {/* Step 2: Contact Info */}
         {step === 2 && (
-          <Card>
+          <Card className="glass-strong">
             <CardHeader>
-              <CardTitle>Шаг 2: Контактные данные</CardTitle>
+              <CardTitle className="text-3xl">Контактные данные</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div>
-                <Label htmlFor="name">Имя *</Label>
+                <Label htmlFor="name" className="text-base mb-2 block">Имя *</Label>
                 <Input
                   id="name"
                   {...register('name')}
                   placeholder="Иван Иванов"
-                  className="mt-1"
                 />
                 {errors.name && (
-                  <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
+                  <p className="text-sm text-destructive mt-2">{errors.name.message}</p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="phone">Телефон *</Label>
+                <Label htmlFor="phone" className="text-base mb-2 block">Телефон *</Label>
                 <Input
                   id="phone"
                   {...register('phone')}
                   placeholder="+79001234567"
-                  className="mt-1"
                 />
                 {errors.phone && (
-                  <p className="text-sm text-red-600 mt-1">{errors.phone.message}</p>
+                  <p className="text-sm text-destructive mt-2">{errors.phone.message}</p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="email">Email *</Label>
+                <Label htmlFor="email" className="text-base mb-2 block">Email *</Label>
                 <Input
                   id="email"
                   type="email"
                   {...register('email')}
                   placeholder="ivan@example.com"
-                  className="mt-1"
                 />
                 {errors.email && (
-                  <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
+                  <p className="text-sm text-destructive mt-2">{errors.email.message}</p>
                 )}
               </div>
 
-              <div className="pt-4 border-t flex gap-3">
-                <Button type="button" variant="outline" onClick={() => setStep(1)} className="flex-1">
+              <div className="pt-6 mt-6 border-t border-ultra-thin flex gap-4">
+                <Button type="button" variant="outline" onClick={() => setStep(1)} className="flex-1" size="lg">
                   Назад
                 </Button>
                 <Button
@@ -252,127 +252,129 @@ export function BookingForm({ slot, onBack, onSubmit }: BookingFormProps) {
                   onClick={() => setStep(3)}
                   disabled={!canProceedToStep3}
                   className="flex-1"
+                  size="lg"
                 >
-                  Далее
+                  Продолжить
                 </Button>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Шаг 3: Подтверждение */}
+        {/* Step 3: Confirmation */}
         {step === 3 && (
-          <Card>
+          <Card className="glass-strong">
             <CardHeader>
-              <CardTitle>Шаг 3: Подтверждение</CardTitle>
+              <CardTitle className="text-3xl">Подтверждение</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Сводка заказа */}
-              <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-                <h4 className="font-semibold">Детали бронирования:</h4>
+              {/* Booking Summary */}
+              <div className="glass rounded-2xl p-6 space-y-4">
+                <h4 className="font-bold text-xl">Детали бронирования:</h4>
                 
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Дата:</span>
-                    <span className="font-medium">{formatDate(new Date(slot.date))}</span>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-secondary">Дата:</span>
+                    <span className="font-semibold">{formatDate(new Date(slot.date))}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Время:</span>
-                    <span className="font-medium">{slot.time}</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-secondary">Время:</span>
+                    <span className="font-semibold">{slot.time}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Тариф:</span>
-                    <span className="font-medium">{slot.tariff.name}</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-secondary">Тариф:</span>
+                    <span className="font-semibold">{slot.tariff.name}</span>
                   </div>
                 </div>
 
-                <div className="pt-3 border-t space-y-2 text-sm">
+                <div className="pt-4 border-t border-ultra-thin space-y-3">
                   {tickets.adult > 0 && (
-                    <div className="flex justify-between">
-                      <span>Взрослых билетов: {tickets.adult}</span>
-                      <span>{formatPrice(tickets.adult * slot.tariff.adultPrice)}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-secondary">Взрослых билетов: {tickets.adult}</span>
+                      <span className="font-semibold">{formatPrice(tickets.adult * slot.tariff.adultPrice)}</span>
                     </div>
                   )}
                   {tickets.child > 0 && (
-                    <div className="flex justify-between">
-                      <span>Детских билетов: {tickets.child}</span>
-                      <span>{formatPrice(tickets.child * slot.tariff.childPrice)}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-secondary">Детских билетов: {tickets.child}</span>
+                      <span className="font-semibold">{formatPrice(tickets.child * slot.tariff.childPrice)}</span>
                     </div>
                   )}
                   {tickets.infant > 0 && (
-                    <div className="flex justify-between">
-                      <span>Детских (до 3 лет): {tickets.infant}</span>
-                      <span>Бесплатно</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-secondary">Детских (до 3 лет): {tickets.infant}</span>
+                      <span className="font-semibold text-primary">Бесплатно</span>
                     </div>
                   )}
                 </div>
 
-                <div className="pt-3 border-t flex justify-between items-center">
-                  <span className="font-semibold text-lg">Итого к оплате:</span>
-                  <span className="font-bold text-2xl text-primary">
+                <div className="pt-4 border-t border-ultra-thin flex justify-between items-center">
+                  <span className="font-bold text-xl">Итого к оплате:</span>
+                  <span className="font-bold text-3xl text-primary glow-emerald">
                     {formatPrice(totalAmount)}
                   </span>
                 </div>
               </div>
 
-              {/* Контактная информация */}
-              <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
-                <h4 className="font-semibold mb-3">Контактная информация:</h4>
-                <div><strong>Имя:</strong> {name}</div>
-                <div><strong>Телефон:</strong> {phone}</div>
-                <div><strong>Email:</strong> {email}</div>
+              {/* Contact Info */}
+              <div className="glass rounded-2xl p-6 space-y-3">
+                <h4 className="font-bold text-xl mb-4">Контактная информация:</h4>
+                <div className="flex justify-between"><span className="text-secondary">Имя:</span><strong>{name}</strong></div>
+                <div className="flex justify-between"><span className="text-secondary">Телефон:</span><strong>{phone}</strong></div>
+                <div className="flex justify-between"><span className="text-secondary">Email:</span><strong>{email}</strong></div>
               </div>
 
-              {/* Согласия */}
-              <div className="space-y-3">
-                <div className="flex items-start gap-2">
+              {/* Agreements */}
+              <div className="glass rounded-2xl p-6 space-y-4">
+                <div className="flex items-start gap-3">
                   <Checkbox
                     id="offer"
                     checked={offerAccepted}
                     onCheckedChange={(checked) => setOfferAccepted(checked === true)}
                   />
-                  <label htmlFor="offer" className="text-sm leading-none cursor-pointer">
+                  <label htmlFor="offer" className="text-sm leading-relaxed cursor-pointer">
                     Ознакомлен с{' '}
-                    <a href="#" className="text-primary underline">
+                    <a href="#" className="text-primary underline hover:no-underline">
                       договором оферты
                     </a>{' '}
                     *
                   </label>
                 </div>
                 {!offerAccepted && step === 3 && (
-                  <p className="text-sm text-red-600">Необходимо согласие с договором оферты</p>
+                  <p className="text-sm text-destructive">Необходимо согласие с договором оферты</p>
                 )}
 
-                <div className="flex items-start gap-2">
+                <div className="flex items-start gap-3">
                   <Checkbox
                     id="personalData"
                     checked={personalDataAccepted}
                     onCheckedChange={(checked) => setPersonalDataAccepted(checked === true)}
                   />
-                  <label htmlFor="personalData" className="text-sm leading-none cursor-pointer">
+                  <label htmlFor="personalData" className="text-sm leading-relaxed cursor-pointer">
                     Даю согласие на обработку персональных данных в соответствии с{' '}
-                    <a href="#" className="text-primary underline">
+                    <a href="#" className="text-primary underline hover:no-underline">
                       политикой конфиденциальности
                     </a>{' '}
                     *
                   </label>
                 </div>
                 {!personalDataAccepted && step === 3 && (
-                  <p className="text-sm text-red-600">
+                  <p className="text-sm text-destructive">
                     Необходимо согласие на обработку персональных данных
                   </p>
                 )}
               </div>
 
-              {/* Кнопки */}
-              <div className="pt-4 border-t flex gap-3">
-                <Button type="button" variant="outline" onClick={() => setStep(2)} className="flex-1">
+              {/* Buttons */}
+              <div className="pt-6 mt-6 border-t border-ultra-thin flex gap-4">
+                <Button type="button" variant="outline" onClick={() => setStep(2)} className="flex-1" size="lg">
                   Назад
                 </Button>
                 <Button
                   type="submit"
                   disabled={!offerAccepted || !personalDataAccepted}
                   className="flex-1"
+                  size="lg"
                 >
                   Забронировать и оплатить
                 </Button>
