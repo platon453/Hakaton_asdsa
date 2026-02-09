@@ -17,10 +17,14 @@ export async function GET(request: NextRequest) {
     if (dateFrom || dateTo) {
       where.date = {}
       if (dateFrom) {
-        where.date.gte = new Date(dateFrom)
+        // Парсим дату правильно (без часового пояса)
+        const fromDate = new Date(dateFrom + 'T00:00:00')
+        where.date.gte = fromDate
       }
       if (dateTo) {
-        where.date.lte = new Date(dateTo)
+        // Для конечной даты добавляем 23:59:59
+        const toDate = new Date(dateTo + 'T23:59:59')
+        where.date.lte = toDate
       }
     } else {
       // По умолчанию показываем слоты на ближайшие 30 дней
