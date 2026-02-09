@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation'
 import { BookingForm } from '@/components/booking/BookingForm'
 import { fetchSlot, createBooking, type Slot } from '@/lib/api-client'
 import type { BookingFormData } from '@/lib/validations'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Loader2, AlertCircle, ArrowLeft } from 'lucide-react'
 
 export default function BookingFormPage({ params }: { params: { slotId: string } }) {
   const router = useRouter()
@@ -46,7 +49,6 @@ export default function BookingFormPage({ params }: { params: { slotId: string }
         agreements: data.agreements,
       })
 
-      // Перенаправляем на страницу оплаты
       router.push(`/payment/${result.booking.id}`)
     } catch (err: any) {
       console.error('Error creating booking:', err)
@@ -57,12 +59,10 @@ export default function BookingFormPage({ params }: { params: { slotId: string }
 
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-50 to-white">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center py-12">
-            <div className="text-4xl mb-4">⏳</div>
-            <p className="text-lg text-muted-foreground">Загрузка...</p>
-          </div>
+      <main className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-16 w-16 text-primary animate-spin mx-auto mb-4" />
+          <p className="text-xl text-secondary">Загрузка...</p>
         </div>
       </main>
     )
@@ -70,40 +70,53 @@ export default function BookingFormPage({ params }: { params: { slotId: string }
 
   if (error || !slot) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-50 to-white">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center py-12 bg-red-50 rounded-lg border border-red-200">
-            <div className="text-4xl mb-4">❌</div>
-            <h3 className="text-lg font-semibold mb-2 text-red-900">Ошибка</h3>
-            <p className="text-red-700">{error || 'Слот не найден'}</p>
-            <button
-              onClick={() => router.push('/booking')}
-              className="mt-4 text-primary underline"
-            >
-              Вернуться к выбору слотов
-            </button>
-          </div>
+      <main className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-16">
+          <Card className="glass-strong max-w-2xl mx-auto">
+            <CardContent className="py-16 text-center">
+              <div className="flex justify-center mb-6">
+                <div className="p-4 rounded-2xl glass-strong">
+                  <AlertCircle className="h-16 w-16 text-destructive" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-3">Ошибка</h3>
+              <p className="text-secondary mb-8">{error || 'Слот не найден'}</p>
+              <Button
+                onClick={() => router.push('/booking')}
+                variant="outline"
+                size="lg"
+              >
+                <ArrowLeft className="mr-2 h-5 w-5" />
+                Вернуться к выбору слотов
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-50 to-white">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-center mb-8">Оформление бронирования</h1>
+    <main className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12 animate-fade-in">
+          <h1 className="text-5xl font-bold mb-4">Оформление бронирования</h1>
+          <div className="w-24 h-1 bg-primary mx-auto rounded-full glow-emerald"></div>
+        </div>
         
         {isSubmitting ? (
-          <div className="text-center py-12">
-            <div className="text-4xl mb-4">⏳</div>
-            <p className="text-lg text-muted-foreground">Создаем бронирование...</p>
+          <div className="text-center py-16">
+            <Loader2 className="h-16 w-16 text-primary animate-spin mx-auto mb-6" />
+            <p className="text-xl text-secondary">Создаем бронирование...</p>
           </div>
         ) : (
-          <BookingForm
-            slot={slot}
-            onBack={() => router.push('/booking')}
-            onSubmit={handleSubmit}
-          />
+          <div className="animate-fade-in-delay-1">
+            <BookingForm
+              slot={slot}
+              onBack={() => router.push('/booking')}
+              onSubmit={handleSubmit}
+            />
+          </div>
         )}
       </div>
     </main>

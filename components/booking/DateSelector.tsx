@@ -81,44 +81,45 @@ export function DateSelector({ selectedDate, onDateChange }: DateSelectorProps) 
   today.setHours(0, 0, 0, 0)
 
   return (
-    <div className="bg-white rounded-lg border p-4">
-      {/* Заголовок с навигацией */}
-      <div className="flex items-center justify-between mb-4">
+    <div className="glass-strong rounded-3xl p-6">
+      {/* Navigation Header */}
+      <div className="flex items-center justify-between mb-6">
         <Button
           variant="ghost"
           size="icon"
           onClick={prevMonth}
           disabled={currentMonth.getMonth() === today.getMonth()}
+          className="hover:glass"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-5 w-5" />
         </Button>
-        <h3 className="text-lg font-semibold capitalize">
+        <h3 className="text-xl font-bold capitalize">
           {formatMonthYear(currentMonth)}
         </h3>
-        <Button variant="ghost" size="icon" onClick={nextMonth}>
-          <ChevronRight className="h-4 w-4" />
+        <Button variant="ghost" size="icon" onClick={nextMonth} className="hover:glass">
+          <ChevronRight className="h-5 w-5" />
         </Button>
       </div>
 
-      {/* Сетка дат */}
+      {/* Date Grid */}
       <div className="grid grid-cols-7 gap-2">
         {dates.map((date, index) => (
           <button
             key={index}
             onClick={() => onDateChange(date)}
             className={`
-              flex flex-col items-center justify-center p-2 rounded-lg transition-colors
+              flex flex-col items-center justify-center p-3 rounded-2xl transition-smooth hover-lift
               ${
                 isSelected(date)
-                  ? 'bg-primary text-primary-foreground font-semibold'
-                  : 'hover:bg-gray-100'
+                  ? 'bg-primary text-primary-foreground font-bold glow-emerald'
+                  : 'glass hover:glass-strong'
               }
             `}
           >
-            <span className="text-xs text-muted-foreground mb-1">
+            <span className={`text-xs mb-1 ${isSelected(date) ? 'opacity-90' : 'text-secondary'}`}>
               {formatWeekday(date)}
             </span>
-            <span className="text-lg">{formatDay(date)}</span>
+            <span className="text-lg font-semibold">{formatDay(date)}</span>
           </button>
         ))}
       </div>

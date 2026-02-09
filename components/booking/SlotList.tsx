@@ -1,6 +1,8 @@
 'use client'
 
 import { SlotCard } from './SlotCard'
+import { Card, CardContent } from '@/components/ui/card'
+import { CalendarX2, Loader2 } from 'lucide-react'
 import type { Slot } from '@/lib/api-client'
 
 interface SlotListProps {
@@ -12,12 +14,16 @@ interface SlotListProps {
 export function SlotList({ slots, onSlotSelect, isLoading }: SlotListProps) {
   if (isLoading) {
     return (
-      <div className="grid gap-4">
-        {[1, 2, 3, 4].map((i) => (
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="h-40 bg-gray-100 rounded-lg animate-pulse"
-          />
+            className="h-56 glass rounded-3xl animate-pulse relative overflow-hidden"
+          >
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Loader2 className="h-8 w-8 text-primary animate-spin" />
+            </div>
+          </div>
         ))}
       </div>
     )
@@ -25,20 +31,26 @@ export function SlotList({ slots, onSlotSelect, isLoading }: SlotListProps) {
 
   if (slots.length === 0) {
     return (
-      <div className="text-center py-12 bg-gray-50 rounded-lg border border-dashed">
-        <div className="text-4xl mb-4">📅</div>
-        <h3 className="text-lg font-semibold mb-2">Нет доступных слотов</h3>
-        <p className="text-muted-foreground">
-          На выбранную дату нет свободных мест. Попробуйте выбрать другой день.
-        </p>
-      </div>
+      <Card className="glass-strong">
+        <CardContent className="py-16 text-center">
+          <div className="flex justify-center mb-4">
+            <CalendarX2 className="h-16 w-16 text-primary/50" />
+          </div>
+          <h3 className="text-xl font-bold mb-2">Нет доступных слотов</h3>
+          <p className="text-secondary max-w-sm mx-auto">
+            На выбранную дату нет свободных мест. Попробуйте выбрать другой день.
+          </p>
+        </CardContent>
+      </Card>
     )
   }
 
   return (
-    <div className="grid gap-4">
-      {slots.map((slot) => (
-        <SlotCard key={slot.id} slot={slot} onSelect={onSlotSelect} />
+    <div className="space-y-4">
+      {slots.map((slot, index) => (
+        <div key={slot.id} className={`animate-fade-in-delay-${Math.min(index, 3)}`}>
+          <SlotCard slot={slot} onSelect={onSlotSelect} />
+        </div>
       ))}
     </div>
   )
