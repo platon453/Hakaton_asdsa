@@ -46,7 +46,10 @@ export function SlotList({ slots, onSlotSelect, isLoading }: SlotListProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="max-h-[600px] overflow-y-auto pr-2 space-y-4 scroll-smooth" style={{
+      scrollbarWidth: 'thin',
+      scrollbarColor: 'rgba(255, 255, 255, 0.2) transparent'
+    }}>
       {slots.map((slot, index) => (
         <div key={slot.id} className={`animate-fade-in-delay-${Math.min(index, 3)}`}>
           <SlotCard slot={slot} onSelect={onSlotSelect} />
