@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, Sparkles, Calendar, Shield, Zap } from 'lucide-react'
+import { ArrowRight, Sparkles, Calendar, Shield, Zap, Heart } from 'lucide-react'
 
 export default function Home() {
   return (
@@ -95,6 +95,15 @@ export default function Home() {
                   Защищенные платежи через PayKeeper. Карты, СБП и другие способы.
                 </p>
               </div>
+            </div>
+            
+            {/* About Us Button */}
+            <div className="text-center mt-16 fade-in-delay">
+              <Link href="/about">
+                <button className="btn-secondary text-lg">
+                  Узнать о нас больше
+                </button>
+              </Link>
             </div>
           </div>
         </section>
