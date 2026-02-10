@@ -83,7 +83,7 @@ function DemoPaymentContent() {
                   <span className="font-medium">{email}</span>
                 </div>
                 <div className="pt-3 border-t flex justify-between items-center">
-                  <span className="font-semibold">Сумма к оплате:</span>
+                  <span className="font-semibold">Сумма</span>
                   <span className="text-2xl font-bold text-primary">
                     {new Intl.NumberFormat('ru-RU', {
                       style: 'currency',

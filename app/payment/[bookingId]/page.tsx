@@ -158,7 +158,7 @@ export default function PaymentPage({ params }: { params: { bookingId: string } 
                 <div className="glass rounded-2xl p-6 mb-6">
                   <div className="flex justify-between items-center">
                     <span className="text-xl font-bold">Сумма к оплате:</span>
-                    <span className="text-4xl font-bold text-primary glow-emerald">
+                    <span className="text-4xl font-bold text-primary">
                       {new Intl.NumberFormat('ru-RU', {
                         style: 'currency',
                         currency: 'RUB',
