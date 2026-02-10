@@ -147,11 +147,40 @@
   
   /* Hover Lift Effect */
   .hover-lift {
-    @apply transition-smooth;
+    @apply transition-all duration-300 ease-in-out;
   }
   
   .hover-lift:hover {
-    transform: translateY(-2px);
+    @apply -translate-y-0.5 shadow-2xl;
+  }
+  
+  /* Premium Buttons */
+  .btn-premium {
+    @apply px-8 py-4 rounded-full bg-white text-black font-semibold 
+           hover:bg-white/90 transition-all duration-300 hover:-translate-y-0.5;
+    box-shadow: 0 20px 60px -15px rgba(255,255,255,0.3);
+  }
+  
+  .btn-secondary {
+    @apply px-8 py-4 rounded-full bg-white/10 text-white font-semibold
+           border border-white/20 hover:bg-white/20 transition-all duration-300
+           hover:-translate-y-0.5 backdrop-blur-xl;
+  }
+  
+  /* Slide Up Animation */
+  .slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
   /* Text Gradient */
@@ -169,4 +198,22 @@
   .border-ultra-thin {
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
