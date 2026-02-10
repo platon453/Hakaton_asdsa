@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Check, Clock, CreditCard, Loader2, AlertCircle, Info } from 'lucide-react'
+import { Footer } from '@/components/Footer'
 
 interface Booking {
   id: string
@@ -207,6 +208,7 @@ export default function PaymentPage({ params }: { params: { bookingId: string } 
           </Card>
         </div>
       </div>
+      <Footer />
     </main>
   )
 }

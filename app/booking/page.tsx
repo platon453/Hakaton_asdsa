@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { BookingCalendar } from '@/components/booking/BookingCalendar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Info, Clock, Camera, Heart, Users, Sparkles } from 'lucide-react'
+import { Footer } from '@/components/Footer'
 import type { Slot } from '@/lib/api-client'
 
 export default function BookingPage() {
@@ -90,6 +91,7 @@ export default function BookingPage() {
           </Card>
         </div>
       </div>
+      <Footer />
     </main>
   )
 }

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Check, Mail, Info, Sparkles, Home, Calendar, Loader2 } from 'lucide-react'
+import { Footer } from '@/components/Footer'
 
 function ThankYouContent() {
   const searchParams = useSearchParams()
@@ -123,6 +124,7 @@ function ThankYouContent() {
           </Card>
         </div>
       </div>
+      <Footer />
     </main>
   )
 }

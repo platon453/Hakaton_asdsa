@@ -8,6 +8,7 @@ import type { BookingFormData } from '@/lib/validations'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Loader2, AlertCircle, ArrowLeft } from 'lucide-react'
+import { Footer } from '@/components/Footer'
 
 export default function BookingFormPage({ params }: { params: { slotId: string } }) {
   const router = useRouter()
@@ -119,6 +120,7 @@ export default function BookingFormPage({ params }: { params: { slotId: string }
           </div>
         )}
       </div>
+      <Footer />
     </main>
   )
 }
