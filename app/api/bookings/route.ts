@@ -109,7 +109,30 @@ export async function POST(request: NextRequest) {
       return booking
     })
 
-    // Создаем контакт и сделку в AmoCRM
+    // Генерируем ссылку на оплату через PayKeeper (обязательно)
+    let paymentLink = ''
+    let paymentId = ''
+    
+    try {
+      const { paykeeper } = await import('@/lib/paykeeper')
+      const paymentResponse = await paykeeper.createPayment({
+        orderId: result.id,
+        amount: Number(result.totalAmount),
+        clientEmail: result.user.email,
+        clientPhone: result.user.phone,
+        clientName: result.user.name,
+      })
+
+      paymentLink = paymentResponse.url
+      paymentId = paymentResponse.invoiceId
+
+      console.log('✅ PayKeeper: ссылка на оплату создана', { invoiceId: paymentId })
+    } catch (error) {
+      console.error('❌ PayKeeper error:', error)
+      // PayKeeper упал, но продолжаем без ссылки на оплату
+    }
+
+    // Создаем контакт и сделку в AmoCRM (опционально)
     const { amocrm } = await import('@/lib/amocrm')
     
     let amocrmContactId: number | undefined
@@ -125,16 +148,6 @@ export async function POST(request: NextRequest) {
         })
         amocrmContactId = contact.id
 
-        // Генерируем ссылку на оплату через PayKeeper
-        const { paykeeper } = await import('@/lib/paykeeper')
-        const paymentResponse = await paykeeper.createPayment({
-          orderId: result.id,
-          amount: Number(result.totalAmount),
-          clientEmail: result.user.email,
-          clientPhone: result.user.phone,
-          clientName: result.user.name,
-        })
-
         // Создаем сделку
         const deal = await amocrm.createDeal({
           name: `Бронирование #${result.id.slice(0, 8)}`,
@@ -145,20 +158,10 @@ export async function POST(request: NextRequest) {
             childTickets: result.childTickets,
             infantTickets: result.infantTickets,
             excursionDate: `${result.slot.date.toISOString().split('T')[0]} ${result.slot.time}`,
-            paymentLink: paymentResponse.url,
+            paymentLink: paymentLink,
           },
         })
         amocrmDealId = deal.id
-
-        // Обновляем бронирование
-        await prisma.booking.update({
-          where: { id: result.id },
-          data: {
-            paymentLink: paymentResponse.url,
-            paymentId: paymentResponse.invoiceId,
-            amocrmDealId: deal.id,
-          },
-        })
 
         // Обновляем пользователя с AmoCRM ID
         await prisma.user.update({
@@ -175,43 +178,18 @@ export async function POST(request: NextRequest) {
       } catch (error) {
         console.error('❌ AmoCRM error:', error)
         // Не прерываем процесс, если AmoCRM не работает
-        // Генерируем ссылку на оплату даже если AmoCRM упал
-        const { paykeeper } = await import('@/lib/paykeeper')
-        const paymentResponse = await paykeeper.createPayment({
-          orderId: result.id,
-          amount: Number(result.totalAmount),
-          clientEmail: result.user.email,
-          clientPhone: result.user.phone,
-          clientName: result.user.name,
-        })
-
-        await prisma.booking.update({
-          where: { id: result.id },
-          data: {
-            paymentLink: paymentResponse.url,
-            paymentId: paymentResponse.invoiceId,
-          },
-        })
       }
-    } else {
-      // AmoCRM не настроен - просто создаем ссылку на оплату
-      const { paykeeper } = await import('@/lib/paykeeper')
-      const paymentResponse = await paykeeper.createPayment({
-        orderId: result.id,
-        amount: Number(result.totalAmount),
-        clientEmail: result.user.email,
-        clientPhone: result.user.phone,
-        clientName: result.user.name,
-      })
-
-      await prisma.booking.update({
-        where: { id: result.id },
-        data: {
-          paymentLink: paymentResponse.url,
-          paymentId: paymentResponse.invoiceId,
-        },
-      })
     }
+
+    // Обновляем бронирование с данными PayKeeper и AmoCRM
+    await prisma.booking.update({
+      where: { id: result.id },
+      data: {
+        paymentLink: paymentLink || null,
+        paymentId: paymentId || null,
+        amocrmDealId: amocrmDealId || null,
+      },
+    })
 
     // TODO: На следующем этапе здесь будет:
     // - Отправка email уведомления

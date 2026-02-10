@@ -31,6 +31,7 @@ export default function PaymentPage({ params }: { params: { bookingId: string } 
   const router = useRouter()
   const [booking, setBooking] = useState<Booking | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
     const loadBooking = async () => {
@@ -51,12 +52,85 @@ export default function PaymentPage({ params }: { params: { bookingId: string } 
     loadBooking()
   }, [params.bookingId])
 
-  const handlePayment = () => {
-    if (booking?.paymentLink) {
-      // Редирект на страницу оплаты PayKeeper (в DEMO режиме это наша страница)
-      window.location.href = booking.paymentLink
-    } else {
-      alert('Ошибка: ссылка на оплату не найдена')
+  const handlePayment = async () => {
+    if (!booking) return
+    
+    setIsProcessing(true)
+
+    try {
+      // Шаг 1: Создаём ссылку на оплату через PayKeeper
+      const createResponse = await fetch('/api/payments/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId: booking.id }),
+      })
+
+      if (!createResponse.ok) {
+        throw new Error('Failed to create payment link')
+      }
+
+      const { paymentUrl, invoiceId } = await createResponse.json()
+
+      // Шаг 2: Открываем popup с оплатой
+      const paymentWindow = window.open(
+        paymentUrl,
+        'PayKeeper',
+        'width=800,height=600,scrollbars=yes,resizable=yes'
+      )
+
+      if (!paymentWindow) {
+        alert('Пожалуйста, разрешите всплывающие окна для оплаты')
+        setIsProcessing(false)
+        return
+      }
+
+      // Шаг 3: Проверяем статус оплаты каждые 3 секунды
+      const checkInterval = setInterval(async () => {
+        // Проверяем, закрыто ли окно оплаты
+        if (paymentWindow.closed) {
+          clearInterval(checkInterval)
+          
+          // Проверяем финальный статус оплаты
+          try {
+            const checkResponse = await fetch('/api/payments/check', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ invoiceId, bookingId: booking.id }),
+            })
+
+            if (checkResponse.ok) {
+              const { isPaid } = await checkResponse.json()
+              
+              if (isPaid) {
+                // Оплата успешна - редирект на thank you
+                router.push(`/thank-you?bookingId=${booking.id}`)
+              } else {
+                setIsProcessing(false)
+                alert('Оплата не завершена. Попробуйте снова.')
+              }
+            } else {
+              setIsProcessing(false)
+            }
+          } catch (error) {
+            console.error('Error checking payment:', error)
+            setIsProcessing(false)
+          }
+        }
+      }, 3000) // Проверка каждые 3 секунды
+
+      // Таймаут на 10 минут
+      setTimeout(() => {
+        clearInterval(checkInterval)
+        if (!paymentWindow.closed) {
+          paymentWindow.close()
+        }
+        setIsProcessing(false)
+      }, 600000)
+
+    } catch (error: any) {
+      console.error('Payment error:', error)
+      alert(error.message || 'Ошибка при создании оплаты')
+      setIsProcessing(false)
     }
   }
 
@@ -168,9 +242,23 @@ export default function PaymentPage({ params }: { params: { bookingId: string } 
                   </div>
                 </div>
 
-                <Button onClick={handlePayment} className="w-full" size="lg">
-                  <CreditCard className="h-5 w-5 mr-2" />
-                  Перейти к оплате
+                <Button 
+                  onClick={handlePayment} 
+                  className="w-full" 
+                  size="lg"
+                  disabled={isProcessing}
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                      Обработка оплаты...
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="h-5 w-5 mr-2" />
+                      Перейти к оплате
+                    </>
+                  )}
                 </Button>
 
                 <p className="text-sm text-secondary text-center mt-4">
