@@ -3,38 +3,34 @@ import { Mail, Phone } from 'lucide-react'
 
 export function Footer() {
   return (
-    <footer className="py-16 px-4 border-t border-white/10">
+    <footer className="py-8 px-4 border-t border-white/10">
       <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-12 mb-12">
+        <div className="grid md:grid-cols-3 gap-8 mb-6">
           {/* Company Info */}
           <div>
-            <h3 className="text-2xl font-bold text-white mb-4">ЛуЛу</h3>
-            <p className="text-white/60 leading-relaxed">
-              Ферма альпак в окружении соснового леса. Незабываемые встречи с природой.
+            <h3 className="text-xl font-bold text-white mb-2">ЛуЛу</h3>
+            <p className="text-sm text-white/50 leading-relaxed">
+              Ферма альпак в окружении соснового леса
             </p>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-lg font-semibold text-white mb-4">Контакты</h4>
-            <div className="space-y-3">
+            <h4 className="text-sm font-semibold text-white/70 mb-3">Контакты</h4>
+            <div className="space-y-2">
               <a 
                 href="tel:+73433101219" 
-                className="flex items-center gap-3 text-white/60 hover:text-white transition-colors group"
+                className="flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors"
               >
-                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                  <Phone className="w-5 h-5" />
-                </div>
+                <Phone className="w-4 h-4" />
                 <span>+7 (343) 310-12-19</span>
               </a>
               
               <a 
                 href="mailto:info@alpaca-lulu.ru" 
-                className="flex items-center gap-3 text-white/60 hover:text-white transition-colors group"
+                className="flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors"
               >
-                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                  <Mail className="w-5 h-5" />
-                </div>
+                <Mail className="w-4 h-4" />
                 <span>info@alpaca-lulu.ru</span>
               </a>
             </div>
@@ -42,17 +38,17 @@ export function Footer() {
 
           {/* Social Links */}
           <div>
-            <h4 className="text-lg font-semibold text-white mb-4">Мы в соцсетях</h4>
-            <div className="flex gap-3">
+            <h4 className="text-sm font-semibold text-white/70 mb-3">Соцсети</h4>
+            <div className="flex gap-2">
               <a
                 href="https://t.me/alpaca_lulu"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all hover-lift group"
+                className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all group"
                 aria-label="Telegram"
               >
                 <svg 
-                  className="w-6 h-6 text-white group-hover:scale-110 transition-transform" 
+                  className="w-5 h-5 text-white group-hover:scale-110 transition-transform" 
                   viewBox="0 0 24 24" 
                   fill="currentColor"
                 >
@@ -64,11 +60,11 @@ export function Footer() {
                 href="https://vk.com/alpaca_lulu"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all hover-lift group"
+                className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all group"
                 aria-label="VK"
               >
                 <svg 
-                  className="w-6 h-6 text-white group-hover:scale-110 transition-transform" 
+                  className="w-5 h-5 text-white group-hover:scale-110 transition-transform" 
                   viewBox="0 0 24 24" 
                   fill="currentColor"
                 >
@@ -80,11 +76,11 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-white/40 text-sm">
+        <div className="pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-3 text-xs">
+          <p className="text-white/40">
             © 2026 ЛуЛу. Все права защищены.
           </p>
-          <div className="flex gap-6 text-sm text-white/40">
+          <div className="flex gap-4 text-white/40">
             <Link href="/about" className="hover:text-white transition-colors">
               О нас
             </Link>
