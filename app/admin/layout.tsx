@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { Auth } from '@/lib/auth'
 import { LogOut, Calendar, DollarSign, Users, LayoutDashboard, ShieldCheck } from 'lucide-react'
 
@@ -72,10 +73,16 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
+  const headersList = headers()
+  const pathname = headersList.get('x-pathname') || ''
+  const isLoginPage = pathname.includes('/admin/login')
+
   return (
     <div className="min-h-screen bg-background">
-      <AdminNav />
-      <main className="container mx-auto px-6 pt-28 pb-12">{children}</main>
+      {!isLoginPage && <AdminNav />}
+      <main className={isLoginPage ? '' : 'container mx-auto px-6 pt-28 pb-12'}>
+        {children}
+      </main>
     </div>
   )
 }

@@ -2,13 +2,20 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
+  // Добавляем pathname в headers для использования в layout
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-pathname', request.nextUrl.pathname)
   const { pathname } = request.nextUrl
 
   // Защита админских маршрутов
   if (pathname.startsWith('/admin')) {
     // Разрешаем доступ к странице логина
     if (pathname === '/admin/login') {
-      return NextResponse.next()
+      return NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      })
     }
 
     // Проверяем наличие сессии
@@ -22,7 +29,11 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next()
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  })
 }
 
 export const config = {
