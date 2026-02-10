@@ -310,7 +310,7 @@ export function BookingForm({ slot, onBack, onSubmit }: BookingFormProps) {
 
                 <div className="pt-4 border-t border-ultra-thin flex justify-between items-center">
                   <span className="font-bold text-xl">Итого к оплате:</span>
-                  <span className="font-bold text-3xl text-primary glow-emerald">
+                  <span className="font-bold text-3xl text-primary">
                     {formatPrice(totalAmount)}
                   </span>
                 </div>
