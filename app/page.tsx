@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight, Sparkles, Calendar, Shield, Zap, Heart } from 'lucide-react'
+import { Footer } from '@/components/Footer'
 
 export default function Home() {
   return (
@@ -101,7 +102,7 @@ export default function Home() {
             <div className="text-center mt-16 fade-in-delay">
               <Link href="/about">
                 <button className="btn-secondary text-lg">
-                  Узнать о нас больше
+                  Информация о ферме
                 </button>
               </Link>
             </div>
@@ -157,13 +158,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="py-12 px-4 border-t border-white/10">
-          <div className="max-w-6xl mx-auto text-center">
-            <p className="text-white/40 text-sm">
-              © 2026 ЛуЛу Альпака. Незабываемые встречи с природой.
-            </p>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </main>
   )
